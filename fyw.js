@@ -1,10 +1,13 @@
 /*
 @肥皂 3.5 放羊娃
 
-青龙抓取接口的请求头：
+青龙抓取签到接口的全部请求体：
 格式  变量名fywtoken  Authorization=xxxxxxxxxxxxx   Authorization的全部值
 https://api.fywa.com.cn/ 接口链接。
 
+3.29更新。加入有邀请的用户每天自动提取奖励(适合多号有徒弟的)
+一天运行一次就行了。。。。。。。不用一天十次
+提现金额自己更改脚本19行
 
 */
 const $ = new Env('放羊娃');
@@ -13,6 +16,7 @@ status = (status = ($.getval("fywstatus") || "1")) > 1 ? `${status}` : ""; // �
 let fywtokenArr = [], fywcount = ''
 let fywtoken = ($.isNode() ? process.env.fywtoken : $.getdata('fywtoken')) || '';
 let fywuid = '', fywid = '', fywsign = '',fywtxid = ''
+let txje = '10' //自定义提现金额。10 = 0.1 元
 
 !(async () => {
   if (typeof $request !== "undefined") {
@@ -26,8 +30,16 @@ let fywuid = '', fywid = '', fywsign = '',fywtxid = ''
       $.index = i + 1;
       console.log(`\n开始【放羊娃${$.index}】`)
       //await fywbind()
-      await fywhq()
-      await fywtx()
+      await fytq()
+      for(let x = 0; x < 10; x++){
+        await fywhq()
+        await $.wait(5000)
+        await fywtx()
+      }
+
+
+
+
 
     }
   }
@@ -50,25 +62,26 @@ function fywck() {
 //获取用户id
 function fywhq(timeout = 0) {
     return new Promise((resolve) => {
-      
+
       let url = {
         url: 'https://api.fywa.com.cn/api/user/extract/get_accounts',
         headers: JSON.parse(`{"Authorization":"${fywtoken}","oaid":"6f6c81f84e42283d2a18855cc26de2be","Client_Type":"android","versioncode":"121","version":"1.2.1","Model":"meizu 16sPro","Manufacturer":"meizu","Android-Version":"10","Host":"api.fywa.com.cn","Connection":"Keep-Alive","Accept-Encoding":"gzip","User-Agent":"okhttp/4.8."}`),
-        
+
       }
       $.get(url, async (err, resp, data) => {
         try {
           const result = JSON.parse(data)
           if (result.code == 200) {
-            
+
             $.log(`\n放羊娃获取用户id:${result.data.lists[0].userId}`)
-            
+
             fywuid = result.data.lists[0].userId
             fywtxid = result.data.lists[0].id
             await fywqq()
+
           } else {
-            $.log(`\n放羊娃用户id:${result.msg}`)
-  
+            $.log(`\n放羊娃获取uid:${result.msg}`)
+
           }
         } catch (e) {
           //$.logErr(e, resp);
@@ -79,15 +92,43 @@ function fywhq(timeout = 0) {
     })
   }
 
-  
+  //提取奖励
+function fytq(timeout = 0) {
+  return new Promise((resolve) => {
+
+    let url = {
+      url: 'https://api.fywa.com.cn/api/user/coin/receive',
+      headers: JSON.parse(`{"Authorization":"${fywtoken}","oaid":"6f6c81f84e42283d2a18855cc26de2be","Client_Type":"android","versioncode":"121","version":"1.2.1","Model":"meizu 16sPro","Manufacturer":"meizu","Android-Version":"10","Host":"api.fywa.com.cn","Connection":"Keep-Alive","Accept-Encoding":"gzip","User-Agent":"okhttp/4.8."}`),
+
+    }
+    $.get(url, async (err, resp, data) => {
+      try {
+        const result = JSON.parse(data)
+        if (result.code == 200) {
+
+          $.log(`\n放羊娃领取收益:${result.msg}`)
+
+        } else {
+          $.log(`\n放羊娃:${result.msg}`)
+
+        }
+      } catch (e) {
+        //$.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    }, timeout)
+  })
+}
+
   //提现
 function fywtx(timeout = 0) {
     return new Promise((resolve) => {
-      
+
       let url = {
         url: 'https://api.fywa.com.cn/api/user/extract/apply',
         headers: JSON.parse(`{"Authorization":" ${fywtoken}","oaid":"6f6c81f84e42283d2a18855cc26de2be","client_type":"android","versioncode":"121","version":"1.2.1","Model":"meizu 16sPro","Manufacturer":"meizu","Android-Version":"10","Content-Type":"application/json; charset=utf-8","Content-Length":"49","Host":"api.fywa.com.cn","Connection":" Keep-Alive","Accept-Encoding":"gzip","User-Agent":"okhttp/4.8.0"}`),
-        body : `{"applyExtractMoney":10,"extractAccountId":${fywtxid}}`
+        body : `{"applyExtractMoney":${txje},"extractAccountId":${fywtxid}}`
       }
       $.post(url, async (err, resp, data) => {
         try {
