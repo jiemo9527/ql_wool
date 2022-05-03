@@ -1,12 +1,13 @@
 /**
- * 金砖旷工 app
- * 下载地址: http://jzkg.jmsfx.top/download/1dc7c27b64c47fad?user=68912
+ * 金砖旷工 app (链接带邀请)  谢谢填写
+ * 下载地址: http://jzkg.jmsfx.top/download/1dc7c27b64c47fad?user=68738
  *
  * cron 0 * * * *  yml2213_javascript_master/jzkg.js
  *
  * 金砖旷工 app (这个没有小程序,ios无缘了呀,自己虚拟机玩下吧)
  *
  * 4-30 更已完成的任务 签到 , 观看视频 , 京喜红包 , 红包雨 , 一键收矿石(需要开启条件))  自己玩吧
+ * 5-1  默认打开 一键收矿石 不需要的自己禁用
  * 薅了可能有,不薅一定没有,别问收益!!
  *
  *一键收矿石:这个比较特殊,可能需要邀请超过30人才能开启(当然 不满足 你也可以直接试试.说不定能行),然后有两个地方,一个是跟随任务每天 8 点一次,另一个跟随 红包雨 每小时一次,请自行选择(连个默认都没开启的)
@@ -17,6 +18,7 @@
  *
  * userid   app 页面兑换界面--左上角 有 id , 找不到的可以告别羊毛了  在问自杀
  *
+ * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
  */
 const $ = new Env("金砖旷工");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -72,6 +74,8 @@ async function tips(ckArr) {
 
 		await start();
 	}
+	await SendMsg(msg);
+
 })()
 	.catch((e) => $.logErr(e))
 	.finally(() => $.done());
@@ -108,16 +112,15 @@ async function start() {
 
 	}
 
-	// console.log('开始 一键收矿石');
-	// await collection();
-	// await $.wait(2 * 1000);
+	console.log('开始 一键收矿石');
+	await collection();
+	await $.wait(2 * 1000);
 
 
 	console.log('开始 红包雨');
 	await rain_open_redbag();
 	await $.wait(2 * 1000);
 
-	await SendMsg(msg);
 }
 
 
