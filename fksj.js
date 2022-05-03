@@ -1,6 +1,6 @@
 /**
  * 疯狂水晶 app (链接带邀请)  谢谢填写
- * 下载地址: http://mmwk.mmwl.fun/download/9570691cce3dc93a?user=17803
+ * 下载地址: http://mmwk.mmwl.fun/download/9570691cce3dc93a?user=18349
  * cron 0 * * * *  yml2213_javascript_master/fksj.js
  *
  * 疯狂水晶 app(小程序也有)
@@ -8,6 +8,7 @@
  * 4-26 更新随机时间间隔
  * 4-28 感谢大佬的指导.终于解决了md5的sign,变量简化,无需抓包了
  * 4-29 更新任务 红包雨 现在已完成的任务(签到 , 观看视频 , 京喜红包 , 红包雨 , 一键收矿石(需要开启条件))
+ * 5-1  默认打开 一键收矿石 不需要的自己禁用
  *
  *一键收矿石:这个比较特殊,可能需要邀请超过30人才能开启(当然 不满足 你也可以直接试试.说不定能行),然后有两个地方,一个是跟随任务每天 8 点一次,另一个跟随 红包雨 每小时一次,请自行选择(连个默认都没开启的)
  *
@@ -34,7 +35,7 @@ let sign = "";
 /////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	console.log(`\n版本: 0.2 -- 22/4/30`);
+	console.log(`\n版本: 0.3 -- 22/4/30`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 感谢大佬的解密! \n`);
 	console.log(`\n 感谢大佬的解密! \n`);
@@ -75,6 +76,8 @@ async function tips(ckArr) {
 
 		await start();
 	}
+	await SendMsg(msg);
+
 })()
 	.catch((e) => $.logErr(e))
 	.finally(() => $.done());
@@ -99,9 +102,9 @@ async function start() {
 		await gold_ad_video();
 		await $.wait(2 * 1000);
 
-		// console.log('开始 一键收矿石');
-		// await collection();
-		// await $.wait(2 * 1000);
+		console.log('开始 一键收矿石');
+		await collection();
+		await $.wait(2 * 1000);
 
 		console.log('开始 升级');
 		await Upgrade();
@@ -116,11 +119,10 @@ async function start() {
 	// await $.wait(2 * 1000);
 
 
-	// console.log('开始 红包雨');
-	// await rain_open_redbag();
-	// await $.wait(2 * 1000);
+	console.log('开始 红包雨');
+	await rain_open_redbag();
+	await $.wait(2 * 1000);
 
-	await SendMsg(msg);
 }
 
 
