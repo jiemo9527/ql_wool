@@ -1,8 +1,6 @@
 /*
 IOS/安卓： 快手 普通版
-邀请下载链接：https://kicdjpmlo.sx3i65zvgw3g8k.com/fission/offkwai/landpagex?code=2235402609&platform=qrcode&fid=2764597391&subBiz=INVITE_CODE&kpn=KUAISHOU&shareToken=Y3rDbpqo1
-邀请二维码(直接扫描打不开的话，下载后用快手APP扫一扫)：https://raw.githubusercontent.com/leafxcy/JavaScript/main/ks.png
-
+青龙-白虎
 脚本目前会做签到和翻倍，开宝箱和翻倍，看广告任务，逛街任务，直播任务
 
 CK里的api_st跟快手极速版的通用，但是需要额外一个did(设备号)，同一台设备捉包的话可以把did复制一遍粘贴到每个账号的api_st后面，建议用不同设备捉包
