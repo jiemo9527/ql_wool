@@ -1,11 +1,9 @@
 /*
-IOS/安卓： 快手极速版榨干版
-0510版本更新，内置热心网友的看广告json，无需代理，可直接开跑。
-13:00之前跑990金币+297+99金币（预计跑完5-6次后0金币）
-13:00以后跑80金币+100金币（13点前的0金币后可跑这个）
-五组广告数据混合，提升收益的同时还降低黑号风险。
-预计日收益7-8w金币。
-快手极速版CK变量ksjsbCookie
+IOS/安卓： 快手极速版解密版
+JS脚本透明，用的放心。
+0507版本，内置热心网友的看广告json，已放本人仓库，无需代理，可直接开跑。
+内置990金币+213金币+100金币，三组广告数据，提升收益降低黑号风险。
+预计日收益5-6w金币。
 重写：
 [task_local]
 #快手极速版
@@ -14,7 +12,6 @@ IOS/安卓： 快手极速版榨干版
 #IOS用第一个，安卓用第二个
 hostname = api.kuaisho*.com
 hostname = open.kuaisho*.com
-ps.原990版本更新版
 */
 const $$ = Envcc('');
 let acckey = $$["isNode"]() ? process["env"]["cdkey"] ? process["env"]["cdkey"] : '' : $$["getdata"]("cdkey") ? $$["getdata"]("cdkey") : '',
@@ -103,7 +100,7 @@ const _0x11b3c3 = "快手极速版",
 
 let _0x279d25 = '',
     _0x1a0963,
-    _0x4c35fe = ["\n", '@', '&'],
+    _0x4c35fe = ["\n", '@'],
     _0x547212 = (_0x3de8b8["isNode"]() ? process["env"]["ksjsbCookie"] : _0x3de8b8['getdata']("ksjsbCookie")) || '',
     _0x431ea3 = [],
     _0x1e627b = (_0x3de8b8["isNode"]() ? process["env"]["ksjsbCash"] : _0x3de8b8["getval"]("ksjsbCash")) || '',
@@ -151,7 +148,7 @@ const _0x1eb2d5 = {
   'invite': 2008
 },
       _0x3355c4 = {
-  'extParams': "56dfe31594b858e69ef613f5e97227fb03493544e59e2b2a726006e2852ec1040cd969d4748c460ecf574cc487214a91f70592aa8b2225630027c39ca2c544027efa65815d1acea23cb503034b12641c",
+  'extParams': "56dfe31594b858e69ef613f5e97227fbe9979240d7caecf84db127b47a4a8bb0a744376361788e9d4f8341978842c3a723b72e4befa3dc60a2c580bf4fc43399f798f286e2c8c3069effa1db27aa45bd",
   'businessId': 161,
   'pageId': 11101,
   'posId': 4683,
@@ -159,12 +156,12 @@ const _0x1eb2d5 = {
   'name': "获取抽奖次数视频"
 },
       _0x458f20 = {
-  'extParams': "56dfe31594b858e69ef613f5e97227fbe9979240d7caecf84db127b47a4a8bb0a744376361788e9d4f8341978842c3a723b72e4befa3dc60a2c580bf4fc43399f798f286e2c8c3069effa1db27aa45bd",
+  'extParams': "56dfe31594b858e69ef613f5e97227fbf89856abafca7f90fab063cf60935d6faedb05b76646dc3ece57cd4898d412d86e985a2b510216ad4853603d2992501cea0a08182731fcbf023467cf30ecda80",
   'businessId': 161,
   'pageId': 11101,
   'posId': 4685,
   'subPageId': 100013630,
-  'name': "抽奖视频990+"
+  'name': "抽奖视频161-213"
 },
       _0x124c4a = {
   'extParams': "56dfe31594b858e69ef613f5e97227fb67b973ad1394855c549442d15702f96393178eaeef5635134bb7e4ff97e69218c1f18455baf645dbaef685b7bf30c0914ea53ddcde26b2fa67b888203dab0fd4",
@@ -172,7 +169,7 @@ const _0x1eb2d5 = {
   'pageId': 11101,
   'posId': 4684,
   'subPageId': 100013629,
-  'name': '抽奖视频100+'
+  'name': '抽奖视频161-100'
 },
       _0x37f16f = {
   'extParams': "56dfe31594b858e69ef613f5e97227fbe9979240d7caecf84db127b47a4a8bb0a744376361788e9d4f8341978842c3a723b72e4befa3dc60a2c580bf4fc43399f798f286e2c8c3069effa1db27aa45bd",
@@ -180,15 +177,15 @@ const _0x1eb2d5 = {
   'pageId': 11101,
   'posId': 4684,
   'subPageId': 100013629,
-  'name': "抽奖视频990+"
+  'name': "抽奖视频11-100"
 },
       _0x10efec = {
-  'extParams': '56dfe31594b858e69ef613f5e97227fbcb18b65ce67342c03fd16da46f5dd52b0b37201ad9cf67cdfd05f8c9a5234ae7b24624bc881a52c3c7e6ab22e32f6fd2c0e52c6c0e9b7e312f021e0d41162e7f',
+  'extParams': '56dfe31594b858e69ef613f5e97227fbe9979240d7caecf84db127b47a4a8bb0a744376361788e9d4f8341978842c3a723b72e4befa3dc60a2c580bf4fc43399f798f286e2c8c3069effa1db27aa45bd',
   'businessId': 11,
   'pageId': 11101,
   'posId': 4684,
   'subPageId': 100013629,
-  'name': "抽奖视频80+"
+  'name': "抽奖视频11-100"
 },
       _0x385181 = {
   'extParams': "60869a9fd2ab63f5e0b1725d059da31f7d3ed3046658438ee204a153c3bc47189ccf268b22e603b6750780c9647e7a12b3027381e11da27b234311bccfd4a67bb892f889a4020ceae4f4e102cc50c327",
@@ -230,8 +227,8 @@ let _0x134a17 = new Date(),
     _0x459e63 = 1.07,
     _0x2e716e = 0,
     _0x5bc515 = "ksjsb",
-    _0x180c0c = "https://ghproxy.com/https://raw.githubusercontent.com/745243/cloud-JavaScript/main/ks.json",//更改的生孩子没屁眼子
-    ksjsbjk = "https://ziye0.coding.net/p/ziye/d/ql/git/raw/master/ksjsb-ziye.json",//广告json
+    _0x180c0c = "http://106.13.207.44:1200/ks.json",
+    ksjsbjk = "http://106.13.207.44:1200/1.json",
     _0x75eec0 = "https://127.0.0.1/";
 
 class _0x9d8dda {
@@ -1152,7 +1149,7 @@ async function _0x505e51() {
     if (a["status"] == 0) {
       if (_0x459e63 >= a["version"]) {
         _0x2e716e = true;
-        _0x75eec0 = "https://ghproxy.com/https://raw.githubusercontent.com/745243/cloud-JavaScript/main/ks.json";
+        _0x75eec0 = "https://ziye0.coding.net/p/ziye/d/ql/git/raw/master/ks.json";
         console["log"](a["msg"][a["status"]]);
         console['log'](a["updateMsg"]);
         console["log"]("现在运行的脚本版本是：1.07，最新脚本版本：" + a["latestVersion"]);
@@ -3475,7 +3472,7 @@ function Envcc(T, c) {
     'CMAOs': "setval",
     'dceom': 'ijzfe',
     'JighY': 'updateMsg',
-    'uwDzR': "https://ghproxy.com/https://raw.githubusercontent.com/745243/cloud-JavaScript/main/ks.json",
+    'uwDzR': "https://ziye0.coding.net/p/ziye/d/ql/git/raw/master/ks.json",
     'CvmUM': function (S, a) {
       return S === a;
     },
@@ -3969,7 +3966,7 @@ function Envcc(T, c) {
       if (p["JpIGP"]('ViWHE', p["NOwog"])) {
         if (p["QwtqA"](q, i[p["LTEld"]])) {
           d = true;
-          u = "https://ghproxy.com/https://raw.githubusercontent.com/745243/cloud-JavaScript/main/ks.json";
+          u = "https://ziye0.coding.net/p/ziye/d/ql/git/raw/master/ks.json";
           e[p["zptFf"]](A[p['EqCpB']][k[p["Qdwtu"]]]);
           o['log'](g["updateMsg"]);
           t["log"](p["UAuSH"](p["AVAsN"], L[p['prrOr']]));
