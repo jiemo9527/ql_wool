@@ -16,7 +16,7 @@ hostname = api.st615.com
 
 const jsname = '九章头条'
 const $ = new Env(jsname);
-const CrytpoJs = require('./crypto-js')
+const CrytpoJs = require('crypto-js')
 const notify = require('./sendNotify');
 let message='';
 let status;
