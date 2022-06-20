@@ -1,80 +1,80 @@
 /**
- * 脚本地址: https://raw.githubusercontent.com/yml2213/javascript/master/tlm/tlm.js
+ * 脚本地址:  https://raw.githubusercontent.com/yml2213/javascript/master/dygy/dygy.js
  * 转载请留信息,谢谢
+ * cron 10 8,12,17, * * *  yml2213_javascript_master/dygy.js
  *
- * 推了吗  链接带邀请  感谢走我的链接
- * 下载地址: ${hostname}/index/user/wechatLogin?uid=10202     (微信打开)
  *
- * cron 10 6-22 * * *  yml2213_javascript_master/tlm.js
- *
- * 5-9		完成 看文章领金币 任务 (每次执行 20 次,尽量模拟人工操作了)
- * 5-10		完成 荣誉值任务(测试中--失败)
- * 5-10		增加随机文章数量
- * 5-10		完成 荣誉值任务2(第二版--测试中)
- * 5-11		荣誉值可用了--好像是每天只有一次
- * 5-17		修改运行次数
- * 5-26		更新领取分红,更改荣誉值次数  每次执行10次
- * 5-27		修复退出问题(测试中)
- * 5-29		修复分红bug ,优化运行逻辑
- * 5-30		修复bug
- * 5-30		增加版本号规则
- * 6-16		修复错误 ,太懒了 ,本来一个域名的事
- *
+ * 抖音果园   入口：抖音点击"我"- "抖音商城" - "果园"   有的号可能没有 ,暂时不知道原因
+ * 3-29    	签到任务、新手彩蛋、每日免费领水滴、三餐礼包、宝箱、盒子领取  初步完成   脚本刚写完,难免有bug,请及时反馈  ；ck有效期测试中
+ * 3-29-2  	更改签到逻辑 , 修复每天免费水滴bug
+ * 3-30    	修改整体逻辑,简化通知
+ * 3-30-2  	修复时间判断bug,增加脚本版本号（一半功能）
+ * 3-31    	修复选择宝箱bug,默认开启debug模式,方便排错,不需要的自觉行关闭
+ * 4-1     	修复几个循环bug,关闭默认debug模式
+ * 6-19		更新模板
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式: export tlm_data=' 手机号&密码 @ 手机号&密码 '  多个账号用 换行 或 @分割
- *
+ * 变量格式: export dygy_data='cookie @ cookie'   ,多账号用 换行 或 @ 分割
+抓 minigame.zijieapi.com  的包  浇一次水即可获取ck
+ * ====================================
  * tg频道: https://t.me/yml2213_tg
  * tg群组: https://t.me/yml_tg
- * qq频道: https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1W4InjV&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5
  *
  */
-const $ = new Env("推了吗");
+
+const $ = new Env("抖音果园");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
-const debug = 0 		//0为关闭调试,1为打开调试,默认为0
-///////////////////////////////////////////////////////////////////
-let ckStr = process.env.tlm_data;
-let msg, ck, token;
-let ck_status = '';
-let ad_status = 0;
-let coin_status = 0;
-let host = 'tlm.juzipi597.com';
-let hostname = 'http://' + host;
-///////////////////////////////////////////////////////////////////
-let VersionCheck = "1.1.3"
-let change = `\n修复错误 ,太懒了 ,本来一个域名的事`
-///////////////////////////////////////////////////////////////////
+const debug = 0			//0为关闭调试,1为打开调试,默认为0
+//---------------------------------------------------------------------------------------------------------
+let ckStr = ($.isNode() ? process.env.dygy_data : $.getdata('dygy_data')) || '';
+let msg, ck;
+let ck_status = true;
+let host = 'minigame.zijieapi.com';
+let hostname = 'https://' + host;
+let watering_unm = 1;
+//---------------------------------------------------------------------------------------------------------
+let VersionCheck = "1.1.1"
+let Change = '变量名字记得换成 dygy_data !'
+let thank = `\n感谢 xx 的投稿\n`
+//---------------------------------------------------------------------------------------------------------
 
 async function tips(ckArr) {
-	let Version_latest = await Version_Check('tlm');
-	let Version = `\n本地脚本:V .1.3  远程仓库脚本:V ${Version_latest}\n`
-
-	DoubleLog(Version)
-	DoubleLog(change)
-
+	let Version_latest = await Version_Check('dygy');
+	let Version = `\n📌 本地脚本: V 1.1.1  远程仓库脚本: V ${Version_latest}`
+	DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
+	// DoubleLog(`${thank}`);
 	await wyy();
-	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
-	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
+	DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
 }
 
 
 !(async () => {
-	let ckArr = await Variable_Check(ckStr, "tlm_data");
+	let ckArr = await Variable_Check(ckStr, "dygy_data");
 	await tips(ckArr);
 	for (let index = 0; index < ckArr.length; index++) {
 		let num = index + 1;
-		console.log(`\n------------- 开始【第 ${num} 个账号】------------- `);
-		msg += `\n------------- 开始【第 ${num} 个账号】------------- `
-
+		DoubleLog(`\n-------- 开始【第 ${num} 个账号】--------`);
 		ck = ckArr[index].split("&");
-
 		debugLog(`【debug】 这是你第 ${num} 账号信息:\n ${ck}`);
+
+		dy_headers = {
+			"Accept": "*/*",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Accept-Language": "zh-CN,zh-Hans;q=0.9",
+			"Connection": "keep-alive",
+			"Content-Type": "application/json",
+			"Cookie": ck[0],
+			"Host": "minigame.zijieapi.com",
+			"Referer": "https://tmaservice.developer.toutiao.com/?appid=tte684903979bdf21a02&version=1.0.1",
+			"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 BytedanceWebview/d8a21c6 Aweme/19.9.0 Mobile ToutiaoMicroApp/2.44.1.0"
+		}
 		await start();
 	}
 	await SendMsg(msg);
+
 })()
 	.catch((e) => $.logErr(e))
 	.finally(() => $.done());
@@ -82,457 +82,442 @@ async function tips(ckArr) {
 
 async function start() {
 
-	console.log("开始 登录");
-	await login();
+	console.log("\n开始 首页信息");
+	await polling_info();
 
-	if (ck_status == 0) {
+	if (ck_status) {
+		console.log('\n开始 获取任务列表');
+		await tasks_list();
 
-		console.log(`\n开始 领取分红`);
-		console.log(`    开始 领取 金币 分红`);
-		await coin_Dividends();
+		console.log('\n开始 戳鸭子');
+		await touch_Duck();
 
-		console.log(`    开始 领取 现金 分红`);
-		await cash_Dividends();
+		console.log('\n开始 浇水');
+		await watering();
+	}
 
-		console.log(`    开始 领取 荣誉值 分红`);
-		await honor_Dividends();
+}
 
 
-		console.log("\n开始 用户信息");
-		await user_info();
 
-		console.log(`\n开始 荣誉广告`);
-		for (let index = 1; index < 11; index++) {
-			if (ad_status < 3) {
-				console.log(`    开始 第 ${index} 次 荣誉广告`);
-				await honor_ad();
-			} else {
-				console.log(`    暂无 荣誉广告,等会再来吧`);
-			}
+
+
+
+/**
+ * 首页信息    httpGet
+ */
+async function polling_info() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/polling_info`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `首页信息`);
+
+	if (result.status_code == 0) {
+		if (result.data.show_info.show_green_gift == true) {
+			DoubleLog(`\n开始 新手彩蛋`);
+			await newcomer_egg();
+		}
+		if (result.data.red_points.sign) {
+			DoubleLog(`开始 七日签到`);
+			await sign_in();
+			DoubleLog(`选择金宝箱【宝箱挑战】`);
+			await choose_gold();
+			DoubleLog('开始 【收集瓶子水滴】');
+			await water_bottle();
 
 		}
-
-		console.log(`\n开始 阅读文章--领金币`);
-		for (let index = 1; index < 11; index++) {
-			if (coin_status == 0) {
-				console.log(`    开始 第 ${index} 次 阅读文章--领金币`);
-				await start_reading();
-			} else {
-				console.log(`    今日广告金币已上限 ,请明日再来浏览吧!`);
+		if (result.data.red_points.box) {
+			if (result.data.red_points.box.rounds != 0 && result.data.red_points.box.times == 0) {
+				DoubleLog(`开盒子 box `);
+				await open_box();
 			}
-
 		}
-	}
-}
-
-
-
-
-
-/**
- * 登录    httpPost
- * ${hostname}/api/user/login
- * http://tlm.juzipi597.com/api/user/login
- */
-async function login() {
-	let url = {
-		url: `${hostname}/api/user/login`,
-		headers: {
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: { "account": ck[0], "password": ck[1] }
-	};
-	let result = await httpPost(url, `登录`);
-
-	if (result.code == 1) {
-
-		console.log(`    登录: 欢迎光临 ${result.data.userinfo.nickname} 🎉  , 手机号: ${result.data.userinfo.username}`);
-		msg += `\n    登录: 欢迎光临 ${result.data.userinfo.nickname} 🎉  , 手机号: ${result.data.userinfo.username}`;
-		token = result.data.userinfo.token;
-
+		if (result.data.show_info.show_challenge == true) {
+			if (result.data.red_points.challenge.times == 0) {
+				DoubleLog(`开宝箱`);
+				await open_challenge();
+			}
+		}
+		if (result.data.show_info.show_nutrient) {
+			DoubleLog(`展示 养分 牌子,化肥功能已开启`);
+			if (result.data.red_points.nutrient_sign) {
+				DoubleLog(`开始 化肥签到`);
+				await fertilizer_sign();
+			}
+			if (result.data.fertilizer.normal != 0) {
+				DoubleLog(`使用 正常 化肥`);
+				await fertilizer_nomal();
+			} else if (result.data.fertilizer.lite != 0) {
+				DoubleLog(`使用 小袋 化肥`);
+				await fertilizer_lite();
+			}
+		}
 	} else {
-		console.log(`    登录: 失败 ❌ 了呢,原因未知！  ${result}`);
-		msg += `\n    登录: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)}`;
-		return ck_status = 1;
+		DoubleLog(`首页信息: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+		return ck_status = false;
 	}
 }
 
 
-
 /**
- * 用户信息   httpPost
- * ${hostname}/api/user/userInfo
+ * 获取任务列表
  */
-async function user_info() {
-	let url = {
-		url: `${hostname}/api/user/userInfo`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: {},
+async function tasks_list() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/tasks/list`,
+		headers: dy_headers,
 	};
-	let result = await httpPost(url, `用户信息`);
+	let result = await httpGet(Option, `获取任务列表`);
 
-	if (result.code == 1) {
-		console.log(`    用户信息: 成功 , 等级: ${result.data.levelName}, 金币: ${result.data.coin} , 荣誉值: ${result.data.honor}`);
-		msg += `\n    用户信息: 成功 , 等级: ${result.data.levelName}, 金币: ${result.data.coin} , 荣誉值: ${result.data.honor}`
+	if (result.status_code == 0) {
+		DoubleLog(`获取任务列表: 成功了🎉  开始任务了鸭!`)
+		tasksarr = result.data.tasks
+		for (let value of tasksarr) {
+			if (value.id == 1) {
+				DoubleLog(`${value.name} 任务: 已完成${value.round_info.current_round}/${value.round_info.total_round} 次 `)
+				if (value.round_info.current_round < value.round_info.total_round) {
+					await Daily_free_water();
+				}
+			}
+			if (value.id == 2) {   // 三餐任务
+				// DoubleLog(`任务状态: 现在是 ${value.name} 时间\n `)
+				n = local_hours();
+				DoubleLog(`现在时间 ${n} 时`);
+				if (n >= 8 && n <= 9) {
+					DoubleLog('开始 【早餐礼包】');
+					await eat_package('早餐');
+				} else if (n >= 12 && n <= 14) {
+					DoubleLog('开始 【午餐礼包】')
+					await eat_package('午餐');
+					await $.wait(2 * 1000);
+				} else if (n >= 18 && n <= 21) {
+					DoubleLog('开始 【晚餐礼包】')
+					await eat_package('晚餐');
+					await $.wait(2 * 1000);
+				} else {
+					DoubleLog(`三餐任务: 不在任务时间 ,跳过`);
+				}
+			}
+		}
 	} else {
-		console.log(`    用户信息:  失败 ❌ 了呢,原因未知！  ${result}`);
-		msg += `\n    用户信息: 失败 ❌ 了呢,原因未知！ `
+		DoubleLog(`获取任务列表: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
 	}
+
 }
 
 
 
 /**
- * 文章列表    httpPost
- * ${hostname}/api/article/articleList
+ * 浇水
  */
-async function article_list() {
-	let page_num = randomInt(1, 230);
-	let url = {
-		url: `${hostname}/api/article/articleList`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: { "type": "9000", "page": page_num },
+async function watering() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/tree/water?aid=1128`,
+		headers: dy_headers,
 	};
-	let result = await httpPost(url, `文章列表`);
-	if (!result) return;
+	let result = await httpGet(Option, `浇水`);
 
-	if (result.code == 1) {
-		// console.log(`    文章列表: 获取成功  🎉`);
-		// msg += `\n    文章列表: 获取成功  🎉`;
-		let article_num = randomInt(1, 9);
-		article_id = result.data[article_num].id;
-		// console.log(`    阅读文章id ${article_id}`);
+	if (result.status_code == 0) {
 
+		DoubleLog(`第${watering_unm} 次浇水,${result.message} 🎉 `);
+		await $.wait(5 * 1000);
+		DoubleLog('等待判断是否有宝箱、盒子box可以领取');
+		await polling_info();
+		await $.wait(3 * 1000);
+		watering_unm++
+
+		if (result.data.kettle.water_num > 10) {
+			await watering();
+		} else {  // 浇水完成
+			DoubleLog(`浇水 完成了 🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次,${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`)
+		}
+	} else if (result.status_code === 1008) {
+		DoubleLog(`浇水: 失败 ,可能是: ${result.message}!`)
+		DoubleLog(`等待3分钟,再次尝试浇水！`);
+		await $.wait(3 * 60 * 1000);
+		await watering();
 	} else {
-		console.log(`    文章列表: 失败 ❌ 了呢,原因未知！  ${result}`);
-		msg += `\n    文章列表: 失败 ❌ 了呢,原因未知!`;
+		DoubleLog(`浇水: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
 	}
+
 }
 
 
 
 /**
- * 开始阅读    httpPost
- * ${hostname}/api/coin/articleReadCountDown
+ * 戳鸭子
  */
-async function start_reading() {
-	await article_list();
-	let url = {
-		url: `${hostname}/api/coin/articleReadCountDown`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: { "article_id": article_id },
+async function touch_Duck() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/scene/touch?scene_id=1`,
+		headers: dy_headers,
 	};
-	let result = await httpPost(url, `开始阅读`);
+	let result = await httpGet(Option, `戳鸭子`);
 
-	if (result.code == 1) {
-		console.log(`    开始阅读: ${article_id} 成功 ,阅读预计获得金币:${result.data.drawNum}`);
-		msg += `\n    开始阅读: ${article_id} 成功 ,阅读预计获得金币:${result.data.drawNum}`;
-		await_num = randomInt(60, 65);
-		console.log(`    等待 ${await_num} 秒后 领取阅读奖励`);
-		await $.wait(await_num * 1000);
-		console.log(`    开始 领取阅读奖励`);
-		await article_coin();
-	} else if (result.code == 0) {
-		if (result.msg == "今日广告金币已上限,请明日再来浏览") {
-			console.log(`    开始阅读:${result.msg}`);
-			msg += `\n    开始阅读:${result.msg}`;
-			await $.wait(5 * 1000);
-			coin_status++;
+	if (result.status_code == 0) {
+		let touch_Duck_status_max = result.data.red_point[0].round_info.total_round;
+		let touch_Duck_status = result.data.red_point[0].round_info.current_round;
+		if (touch_Duck_status < touch_Duck_status_max) {
+			if (result.data.reward_item) {
+				DoubleLog(`戳鸭子: 成功了🎉  获得 ${result.data.reward_item.num} 水滴 ,领取后后共有 ${result.data.kettle.water_num} 水滴!`);
+				await wait(10);
+				await touch_Duck();
+			} else if (result.data.reward_item == null) {
+				DoubleLog(`戳鸭子: 这次没有 ,等 3 秒下一次!`);
+				await wait(3);
+				await touch_Duck();
+			}
 		} else {
-			console.log(`    开始阅读:这篇文章读过了 ,让我们跳过他!`);
-			msg += `\n    开始阅读:这篇文章读过了 ,让我们跳过他!`;
-			await $.wait(20 * 1000);
-			await article_coin();
+			DoubleLog(`鸭子不能给你水滴了,再去别的地方看看吧!`);
 		}
+	} else if (result.status_code == 1001) {
+		DoubleLog(`戳鸭子: 鸭子不能给你水滴了,再去别的地方看看吧!`)
 	} else {
-		console.log(`    开始阅读: 失败 ❌ 了呢, 原因未知!`);
-		msg += `\n    开始阅读: 失败 ❌ 了呢, 原因未知! `;
-	}
-}
-
-
-/**
- * 阅读文章--领金币    httpPost
- * ${hostname}/api/coin/articleReadEnd
- */
-async function article_coin() {
-	await article_list();
-	let url = {
-		url: `${hostname}/api/coin/articleReadEnd`,
-		headers: {
-
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: { "article_id": article_id },
-	};
-	let result = await httpPost(url, `阅读文章--领金币`);
-
-}
-
-
-
-/**
- * 荣誉广告    httpPost
- * ${hostname}/api/newtask/signSubmit
- */
-async function honor_ad() {
-	let url = {
-		url: `${hostname}/api/newtask/signSubmit`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: {},
-	};
-	let result = await httpPost(url, `荣誉广告`);
-
-	if (result.code == 0) {
-		console.log(`    荣誉广告: 成功 ,开始阅读广告: ${result.data.title}`);
-		msg += `\n    荣誉广告: 成功 ,开始阅读广告: ${result.data.title}`;
-		honor_id = result.data.id;
-		console.log(`    开始 领取荣誉值`);
-		await receive_honor();
-	} else if (result.code == 1) {
-		console.log(`    荣誉广告: ${result.msg}`);
-		msg += `\n    荣誉广告: ${result.msg}`;
-		ad_status++;
-	} else {
-		console.log(`    荣誉广告: 失败 ❌ 了呢,原因未知！`);
-		msg += `\n    荣誉广告: 失败 ❌ 了呢,原因未知! `;
-	}
-}
-
-
-
-
-
-/**
- * 领取荣誉值    httpPost
- * ${hostname}/api/newtask/getBannerTimer
- */
-async function receive_honor() {
-
-	// 获取开始荣誉值 做判断
-	let url_start = {
-		url: `${hostname}/api/newtask/taskPageData`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: {},
-	};
-	let result_start = await httpPost(url_start, `获取荣誉值 初始值`);
-	if (result_start.code == 1) {
-		honor_start = result_start.data.user.honor;
-	} else {
-		console.log(`    获取荣誉值 初始值: 失败 ❌ 了呢,原因未知！`);
-		msg += `\n    获取荣誉值 初始值: 失败 ❌ 了呢,原因未知! `;
-	}
-
-
-	// 开始阅读文章
-	let url = {
-		url: `${hostname}/api/newtask/getBannerTimer`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: { "id": honor_id, "type": "1" },
-	};
-	let result = await httpPost(url, `领取荣誉值 开始阅读`);
-
-	let num = randomInt(20, 25);
-	console.log(`    等待 ${num} 秒后 结束阅读`);
-	await $.wait(num * 1000);
-
-	// 结束阅读文章
-	let url_read_end = {
-		url: `${hostname}/api/newtask/getBannerBack`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: { "id": honor_id, "type": "1" },
-	};
-	let result_read_end = await httpPost(url_read_end, `领取荣誉值 结束阅读`);
-
-
-
-	// 获取结束荣誉值 做判断
-	let url_end = {
-		url: `${hostname}/api/newtask/taskPageData`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: {},
-	};
-	let result_end = await httpPost(url_end, `获取荣誉值 结束值`);
-	if (result_end.code == 1) {
-		honor_end = result_end.data.user.honor;
-	} else {
-		console.log(`    获取荣誉值 结束值: 失败 ❌ 了呢,原因未知！`);
-		msg += `\n    获取荣誉值 结束值: 失败 ❌ 了呢,原因未知! `;
-	}
-
-
-	if (honor_start < honor_end) {
-		console.log(`    领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum}`);
-		msg += `\n    领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum}`;
-	} else {
-		console.log(`    领取荣誉值: 失败 ❌ 了呢,原因未知！`);
-		msg += `\n    领取荣誉值: 失败 ❌ 了呢,原因未知! `;
-	}
-}
-
-
-
-/**
- * 领取金币分红    httpPost
- */
-async function coin_Dividends() {
-	let url = {
-		url: `${hostname}/api/newtask/fhSubmit`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: {
-			'reward': '2',
-			'oaid': 'e0d5533d13d3084e',
-			'imei': '',
-			'uuid': ''
-		},
-	};
-	let result = await httpPost(url, `领取金币分红`);
-
-	if (result.code == 0) {
-		console.log(`    领取金币分红成功 🎉`);
-		msg += `\n    领取金币分红成功 🎉`;
-		await $.awit(3 * 1000);
-	} else if (result.code == 1) {
-		console.log(`    领取金币分红:${result.msg}`);
-		msg += `\n    领取金币分红:${result.msg}`;
-	} else {
-		console.log(`    领取金币分红: 失败 ❌ 了呢,原因未知!`);
+		DoubleLog(`戳鸭子: 失败 ❌ 了呢,原因未知!`);
 		console.log(result);
-		msg += `\n    领取金币分红: 失败 ❌ 了呢,原因未知!\n `;
 	}
+}
 
+/**
+ * 选择金宝箱
+ * https://minigame.zijieapi.com/ttgame/game_orchard_ecom/challenge/choose?task_id=2&os_version=12&version_code=210000&device_id=1869625912470847&iid=2063140836095230&app_name=aweme&device_platform=android&device_type=M2102J2SC&channel=xiaomi_1128_64&aid=1128&ac=wifi&version_name=21.0.0&update_version_code=21009900&scene=021008
+ *
+ * https://minigame.zijieapi.com/ttgame/game_orchard_ecom/challenge/choose?task_id=2
+ */
+async function choose_gold() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/challenge/choose?task_id=2`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `选择金宝箱`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`选择金宝箱: ${result.message}了鸭 🎉 `)
+	} else if (result.status_code == 1001) {
+		DoubleLog(`选择金宝箱: 失败 ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`选择金宝箱: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
 }
 
 
 
-
 /**
- * 领取现金分红    httpPost
+ * 领取宝箱奖励
  */
-async function cash_Dividends() {
-
-	let url = {
-		url: `${hostname}/api/newtask/fhSubmit`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: {
-			'reward': '1',
-			'oaid': 'e0d5533d13d3084e',
-			'imei': '',
-			'uuid': ''
-		},
+async function open_challenge() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/challenge/reward?aid=1128`,
+		headers: dy_headers,
 	};
-	let result = await httpPost(url, `领取现金分红`);
+	let result = await httpGet(Option, `领取宝箱奖励`);
+
 	// console.log(result);
-
-	if (result.code == 0) {
-		console.log(`    领取现金分红成功 🎉`);
-		msg += `\n    领取现金分红成功 🎉`;
-		await $.awit(3 * 1000);
-	} else if (result.code == 1) {
-		console.log(`    领取现金分红:${result.msg}`);
-		msg += `\n    领取现金分红:${result.msg}`;
+	if (result.status_code == 0) {
+		DoubleLog(`领取宝箱奖励: ${result.message}了鸭 🎉 , 获得 ${result.data.reward_item.num} 水滴 , 领取后有 ${result.data.kettle.water_num} 水滴 `)
+	} else if (result.status_code == 1001) {
+		DoubleLog(`领取宝箱奖励: 失败 ,可能是: ${result.message}!`)
 	} else {
-		console.log(`    领取现金分红: 失败 ❌ 了呢,原因未知!`);
+		DoubleLog(`领取宝箱奖励: 失败 ❌ 了呢,原因未知!`);
 		console.log(result);
-		msg += `\n    领取现金分红: 失败 ❌ 了呢,原因未知!\n `;
+	}
+}
+
+
+/**
+ * 领取盒子奖励
+ */
+async function open_box() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/box/open?aid=1128`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `领取盒子奖励`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`领取盒子奖励: ${result.message}了鸭 🎉 , 获得 ${result.data.reward_item.num} 水滴 , 领取后有 ${result.data.kettle.water_num} 水滴 `)
+	} else if (result.status_code == 1001) {
+		DoubleLog(`领取盒子奖励: 失败 ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`领取盒子奖励: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
 	}
 
 }
-
 
 
 
 /**
- * 领取荣誉值分红    httpPost
+ * 使用小袋化肥
  */
-async function honor_Dividends() {
-
-	let url = {
-		url: `${hostname}/api/newtask/fhSubmit`,
-		headers: {
-			"token": token,
-			"Accept": "application/json",
-			"Host": host,
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		form: {
-			'reward': '0',
-			'oaid': 'e0d5533d13d3084e',
-			'imei': '',
-			'uuid': ''
-		},
+async function fertilizer_lite() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/use/fertilizer?fertilizer_type=4`,
+		headers: dy_headers,
 	};
-	let result = await httpPost(url, `领取荣誉值分红`);
+	let result = await httpGet(Option, `使用小袋化肥`);
 
-	if (result.code == 0) {
-		console.log(`    领取荣誉值分红成功 🎉`);
-		msg += `\n    领取荣誉值分红成功 🎉`;
-		await $.awit(3 * 1000);
-	} else if (result.code == 1) {
-		console.log(`    领取荣誉值分红:${result.msg}`);
-		msg += `\n    领取荣誉值分红:${result.msg}`;
+	if (result.status_code == 0) {
+		DoubleLog(`使用小袋化肥: ${result.message}了鸭 🎉 ,当前肥力 ${result.data.nutrient} 养分 ,剩余正常化肥 ${result.data.fertilizer.normal} 袋、小袋化肥 ${result.data.fertilizer.lite} 袋 `)
+	} else if (result.status_code == 1001) {
+		DoubleLog(`使用小袋化肥: 失败 ,可能是: ${result.message}!`)
 	} else {
-		console.log(`    领取荣誉值分红: 失败 ❌ 了呢,原因未知!`);
+		DoubleLog(`使用小袋化肥: 失败 ❌ 了呢,原因未知!`);
 		console.log(result);
-		msg += `\n    领取荣誉值分红: 失败 ❌ 了呢,原因未知!\n `;
+	}
+}
+
+/**
+ * 收集瓶子水滴
+ */
+async function water_bottle() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/water_bottle/reward?aid=1128`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `收集瓶子水滴`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`收集瓶子水滴: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 收集瓶子水滴后共有 ${result.data.kettle.water_num} 水滴 `)
+		await wait(3);
+	} else if (result.status_code == 1001) {
+		DoubleLog(`收集瓶子水滴: ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`收集瓶子水滴: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+/**
+ * 化肥签到
+ */
+async function fertilizer_sign() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/nutrient/sign_in`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `化肥签到`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`化肥签到: ${result.message}了鸭 🎉 , 获得 ${result.sign.reward_item.name} ${result.sign.reward_item.num} 袋`)
+	} else if (result.status_code == 1001) {
+		DoubleLog(`化肥签到: ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`化肥签到: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+
+/**
+ * 七天签到
+ */
+async function sign_in() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/sign_in/reward`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `七天签到`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`七天签到: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 签到后共有 ${result.data.kettle.water_num} 水滴`)
+	} else if (result.status_code == 1001) {
+		DoubleLog(`七天签到: ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`七天签到: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+/**
+ * 每日免费领水滴
+ */
+async function Daily_free_water() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/tasks/reward?task_id=1`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `每日免费领水滴`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`每日免费领水滴: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 冷却时间 ${result.data.task.reward_item.time} 秒`);
+		await wait(310);
+		await Daily_free_water();
+	} else if (result.status_code == 1001) {
+		DoubleLog(`每日免费领水滴: ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`每日免费领水滴: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+
+/**
+ * 新手彩蛋
+ */
+async function newcomer_egg() {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/green_gift/reward?aid=1128`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `新手彩蛋`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`新手彩蛋: 砸蛋成功了鸭🎉 ,获得水滴${result.data.reward_item.num} 个 , 领取后后共有 ${result.data.kettle.water_num} 水滴 ,等待 6 分钟,等下一个彩蛋孵化鸭!`);
+		await wait(310);
+	} else if (result.status_code == 1001) {
+		DoubleLog(`新手彩蛋: ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`新手彩蛋: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+/**
+ * 三餐礼包
+ */
+async function eat_package(name) {
+	let Option = {
+		url: `${hostname}/ttgame/game_orchard_ecom/tasks/reward?task_id=2`,
+		headers: dy_headers,
+	};
+	let result = await httpGet(Option, `三餐礼包`);
+
+	if (result.status_code == 0) {
+		DoubleLog(`${name}礼包: 领取成功了🎉 ,获得水滴${result.data.task.reward_item.num} 个 ,领取后后共有 ${result.data.kettle.water_num} 水滴`);
+	} else if (result.status_code == 1001) {
+		DoubleLog(`${name}礼包: ,可能是: ${result.message}!`)
+	} else {
+		DoubleLog(`${name}礼包: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -952,4 +937,4 @@ function MD5Encrypt(a) { function b(a, b) { return a << b | a >>> 32 - b } funct
 // 完整 Env
 function Env(t, e) { "undefined" != typeof process && JSON.stringify(process.env).indexOf("GITHUB") > -1 && process.exit(0); class s { constructor(t) { this.env = t } send(t, e = "GET") { t = "string" == typeof t ? { url: t } : t; let s = this.get; return "POST" === e && (s = this.post), new Promise((e, i) => { s.call(this, t, (t, s, r) => { t ? i(t) : e(s) }) }) } get(t) { return this.send.call(this.env, t) } post(t) { return this.send.call(this.env, t, "POST") } } return new class { constructor(t, e) { this.name = t, this.http = new s(this), this.data = null, this.dataFile = "box.dat", this.logs = [], this.isMute = !1, this.isNeedRewrite = !1, this.logSeparator = "\n", this.startTime = (new Date).getTime(), Object.assign(this, e), this.log("", `🔔${this.name}, 开始!`) } isNode() { return "undefined" != typeof module && !!module.exports } isQuanX() { return "undefined" != typeof $task } isSurge() { return "undefined" != typeof $httpClient && "undefined" == typeof $loon } isLoon() { return "undefined" != typeof $loon } toObj(t, e = null) { try { return JSON.parse(t) } catch { return e } } toStr(t, e = null) { try { return JSON.stringify(t) } catch { return e } } getjson(t, e) { let s = e; const i = this.getdata(t); if (i) try { s = JSON.parse(this.getdata(t)) } catch { } return s } setjson(t, e) { try { return this.setdata(JSON.stringify(t), e) } catch { return !1 } } getScript(t) { return new Promise(e => { this.get({ url: t }, (t, s, i) => e(i)) }) } runScript(t, e) { return new Promise(s => { let i = this.getdata("@chavy_boxjs_userCfgs.httpapi"); i = i ? i.replace(/\n/g, "").trim() : i; let r = this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout"); r = r ? 1 * r : 20, r = e && e.timeout ? e.timeout : r; const [o, h] = i.split("@"), n = { url: `http://${h}/v1/scripting/evaluate`, body: { script_text: t, mock_type: "cron", timeout: r }, headers: { "X-Key": o, Accept: "*/*" } }; this.post(n, (t, e, i) => s(i)) }).catch(t => this.logErr(t)) } loaddata() { if (!this.isNode()) return {}; { this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path"); const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile), s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e); if (!s && !i) return {}; { const i = s ? t : e; try { return JSON.parse(this.fs.readFileSync(i)) } catch (t) { return {} } } } } writedata() { if (this.isNode()) { this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path"); const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile), s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e), r = JSON.stringify(this.data); s ? this.fs.writeFileSync(t, r) : i ? this.fs.writeFileSync(e, r) : this.fs.writeFileSync(t, r) } } lodash_get(t, e, s) { const i = e.replace(/\[(\d+)\]/g, ".$1").split("."); let r = t; for (const t of i) if (r = Object(r)[t], void 0 === r) return s; return r } lodash_set(t, e, s) { return Object(t) !== t ? t : (Array.isArray(e) || (e = e.toString().match(/[^.[\]]+/g) || []), e.slice(0, -1).reduce((t, s, i) => Object(t[s]) === t[s] ? t[s] : t[s] = Math.abs(e[i + 1]) >> 0 == +e[i + 1] ? [] : {}, t)[e[e.length - 1]] = s, t) } getdata(t) { let e = this.getval(t); if (/^@/.test(t)) { const [, s, i] = /^@(.*?)\.(.*?)$/.exec(t), r = s ? this.getval(s) : ""; if (r) try { const t = JSON.parse(r); e = t ? this.lodash_get(t, i, "") : e } catch (t) { e = "" } } return e } setdata(t, e) { let s = !1; if (/^@/.test(e)) { const [, i, r] = /^@(.*?)\.(.*?)$/.exec(e), o = this.getval(i), h = i ? "null" === o ? null : o || "{}" : "{}"; try { const e = JSON.parse(h); this.lodash_set(e, r, t), s = this.setval(JSON.stringify(e), i) } catch (e) { const o = {}; this.lodash_set(o, r, t), s = this.setval(JSON.stringify(o), i) } } else s = this.setval(t, e); return s } getval(t) { return this.isSurge() || this.isLoon() ? $persistentStore.read(t) : this.isQuanX() ? $prefs.valueForKey(t) : this.isNode() ? (this.data = this.loaddata(), this.data[t]) : this.data && this.data[t] || null } setval(t, e) { return this.isSurge() || this.isLoon() ? $persistentStore.write(t, e) : this.isQuanX() ? $prefs.setValueForKey(t, e) : this.isNode() ? (this.data = this.loaddata(), this.data[e] = t, this.writedata(), !0) : this.data && this.data[e] || null } initGotEnv(t) { this.got = this.got ? this.got : require("got"), this.cktough = this.cktough ? this.cktough : require("tough-cookie"), this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar, t && (t.headers = t.headers ? t.headers : {}, void 0 === t.headers.Cookie && void 0 === t.cookieJar && (t.cookieJar = this.ckjar)) } get(t, e = (() => { })) { t.headers && (delete t.headers["Content-Type"], delete t.headers["Content-Length"]), this.isSurge() || this.isLoon() ? (this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })), $httpClient.get(t, (t, s, i) => { !t && s && (s.body = i, s.statusCode = s.status), e(t, s, i) })) : this.isQuanX() ? (this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, { hints: !1 })), $task.fetch(t).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => e(t))) : this.isNode() && (this.initGotEnv(t), this.got(t).on("redirect", (t, e) => { try { if (t.headers["set-cookie"]) { const s = t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString(); s && this.ckjar.setCookieSync(s, null), e.cookieJar = this.ckjar } } catch (t) { this.logErr(t) } }).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => { const { message: s, response: i } = t; e(s, i, i && i.body) })) } post(t, e = (() => { })) { if (t.body && t.headers && !t.headers["Content-Type"] && (t.headers["Content-Type"] = "application/x-www-form-urlencoded"), t.headers && delete t.headers["Content-Length"], this.isSurge() || this.isLoon()) this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })), $httpClient.post(t, (t, s, i) => { !t && s && (s.body = i, s.statusCode = s.status), e(t, s, i) }); else if (this.isQuanX()) t.method = "POST", this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, { hints: !1 })), $task.fetch(t).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => e(t)); else if (this.isNode()) { this.initGotEnv(t); const { url: s, ...i } = t; this.got.post(s, i).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => { const { message: s, response: i } = t; e(s, i, i && i.body) }) } } time(t, e = null) { const s = e ? new Date(e) : new Date; let i = { "M+": s.getMonth() + 1, "d+": s.getDate(), "H+": s.getHours(), "m+": s.getMinutes(), "s+": s.getSeconds(), "q+": Math.floor((s.getMonth() + 3) / 3), S: s.getMilliseconds() }; /(y+)/.test(t) && (t = t.replace(RegExp.$1, (s.getFullYear() + "").substr(4 - RegExp.$1.length))); for (let e in i) new RegExp("(" + e + ")").test(t) && (t = t.replace(RegExp.$1, 1 == RegExp.$1.length ? i[e] : ("00" + i[e]).substr(("" + i[e]).length))); return t } msg(e = t, s = "", i = "", r) { const o = t => { if (!t) return t; if ("string" == typeof t) return this.isLoon() ? t : this.isQuanX() ? { "open-url": t } : this.isSurge() ? { url: t } : void 0; if ("object" == typeof t) { if (this.isLoon()) { let e = t.openUrl || t.url || t["open-url"], s = t.mediaUrl || t["media-url"]; return { openUrl: e, mediaUrl: s } } if (this.isQuanX()) { let e = t["open-url"] || t.url || t.openUrl, s = t["media-url"] || t.mediaUrl; return { "open-url": e, "media-url": s } } if (this.isSurge()) { let e = t.url || t.openUrl || t["open-url"]; return { url: e } } } }; if (this.isMute || (this.isSurge() || this.isLoon() ? $notification.post(e, s, i, o(r)) : this.isQuanX() && $notify(e, s, i, o(r))), !this.isMuteLog) { let t = ["", "==============📣系统通知📣=============="]; t.push(e), s && t.push(s), i && t.push(i), console.log(t.join("\n")), this.logs = this.logs.concat(t) } } log(...t) { t.length > 0 && (this.logs = [...this.logs, ...t]), console.log(t.join(this.logSeparator)) } logErr(t, e) { const s = !this.isSurge() && !this.isQuanX() && !this.isLoon(); s ? this.log("", `❗️${this.name}, 错误!`, t.stack) : this.log("", `❗️${this.name}, 错误!`, t) } wait(t) { return new Promise(e => setTimeout(e, t)) } done(t = {}) { const e = (new Date).getTime(), s = (e - this.startTime) / 1e3; this.log("", `🔔${this.name}, 结束! 🕛 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t) } }(t, e) }
 
-  //#endregion
+ //#endregion
